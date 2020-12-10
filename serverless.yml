@@ -1,0 +1,91 @@
+# serverless.yml
+
+service: mayday
+
+custom:
+  tableName: 'endpoints-table-${self:provider.stage}'
+  dynamodb:
+  start:
+    inMemory: true
+    migrate: true
+    sharedDb: true
+  serverless-offline:
+    noPrependStageInUrl: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["maydayDynamoDBTable", "Arn" ] }
+  environment:
+    ENDPOINT_TABLE: ${self:custom.tableName}
+    TWILIO_ACCOUNT_SID: AC7be378409ce419e1f042ea159315ec4f
+    TWILIO_AUTH_TOKEN: e99e268bd9d25032a4818de30bd22cfa
+    BASE_DOMAIN: https://h1xvsc9cg0.execute-api.us-east-1.amazonaws.com/dev
+
+
+functions:
+  app:
+    handler: main.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+  probeEndpoints:
+    handler: main.handler
+    events:
+      - http: 'GET /probe-endpoints'
+  getEndpoint:
+    handler: main.handler
+    events:
+      - http: 'GET /endpoint/{proxy+}'
+  getEndpoints:
+    handler: main.handler
+    events:
+      - http: 'GET /endpoints'
+  createEndPoint:
+    handler: main.handler
+    events:
+      - http: 'POST /create-endpoint'
+  deleteEndpoint:
+    handler: main.handler
+    events:
+      - http: 'GET /delete-endpoint/{proxy+}'
+
+resources:
+  Resources:
+    maydayDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: endPointId
+            AttributeType: S
+          -
+            AttributeName: status
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: endPointId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}
+
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+

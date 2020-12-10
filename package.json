@@ -1,0 +1,38 @@
+{
+  "name": "mayday",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^6.8.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.799.0",
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "cache": "^2.3.1",
+    "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.5",
+    "date-and-time": "^0.14.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "inquirer": "^7.3.3",
+    "node-cache": "^5.1.2",
+    "node-storage": "0.0.9",
+    "ping-monitor": "^0.5.1",
+    "request": "^2.81.0",
+    "serverless-http": "^2.6.0",
+    "tcp-ping": "^0.1.1",
+    "time-stamp": "^2.2.0",
+    "twilio": "^3.53.0"
+  },
+  "bin": {
+    "mayday": "./cli.js"
+  }
+}
